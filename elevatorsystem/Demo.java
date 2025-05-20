@@ -3,11 +3,13 @@ package elevatorsystem;
 class Demo{
     public static void main(String[] args) {
         /*
-        1-Anyone can make a request to elevator using dial pad 
-        2-An Elevator should process the request
-        3-handled concurrent request and optimize wait time for the user
-        4-multifloor elevator and multiple elevator with a capacity
-        5-different strategies for processing of reqeuset by elevator 
+       The elevator system should consist of multiple elevators serving multiple floors.
+        Each elevator should have a capacity limit and should not exceed it.
+        Users should be able to request an elevator from any floor and select a destination floor.
+        The elevator system should efficiently handle user requests and optimize the movement of elevators to minimize waiting time.
+        The system should prioritize requests based on the direction of travel and the proximity of the elevators to the requested floor.
+        The elevators should be able to handle multiple requests concurrently and process them in an optimal order.
+        The system should ensure thread safety and prevent race conditions when multiple threads interact with the elevators.       
         */
 
         ElevatorAssignmentStrategy assignStrategy = new  NearestElevatorStrategy();
