@@ -28,7 +28,7 @@ class Demo{
         bookingSystem.addShow(show2);
 
         // Book tickets
-        User user = new User("U1", "John Doe", "john@example.com");
+        User user = new User("1", "demouser");
         PaymentContext paymentProcessor = new PaymentContext();
         paymentProcessor.setPaymentStrategy(new UPIPayment("xyz-1@oksbi"));
         List<Seat> selectedSeats = Arrays.asList(show1.getSeats().get("1-5"), show1.getSeats().get("1-6"));
