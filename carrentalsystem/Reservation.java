@@ -3,12 +3,12 @@ import java.time.temporal.ChronoUnit;
 
 public class Reservation {
     private final String reservationId;
-    private final Car car;
+    private final Cars car;
     private final LocalDate startDate;
     private final LocalDate endDate;
     private final double totalPrice;
 
-    public Reservation(String reservationId, Customer customer, Car car, LocalDate startDate, LocalDate endDate) {
+    public Reservation(String reservationId, Customer customer, Cars car, LocalDate startDate, LocalDate endDate) {
         this.reservationId = reservationId;
         this.car = car;
         this.startDate = startDate;
@@ -29,7 +29,7 @@ public class Reservation {
         return endDate;
     }
 
-    public Car getCar() {
+    public Cars getCar() {
         return car;
     }
 

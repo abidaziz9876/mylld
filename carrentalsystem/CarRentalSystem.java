@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CarRentalSystem {
     private static CarRentalSystem instance;
-    private final Map<String, Car> cars;
+    private final Map<String, Cars> cars;
     private final Map<String, Reservation> reservations;
     private final PaymentProcessor paymentProcessor;
 
@@ -26,7 +26,7 @@ public class CarRentalSystem {
         return instance;
     }
 
-    public void addCar(Car car) {
+    public void addCar(Cars car) {
         cars.put(car.getLicensePlate(), car);
     }
 
@@ -34,9 +34,9 @@ public class CarRentalSystem {
         cars.remove(licensePlate);
     }
 
-    public List<Car> searchCars(String make, String model, LocalDate startDate, LocalDate endDate) {
-        List<Car> availableCars = new ArrayList<>();
-        for (Car car : cars.values()) {
+    public List<Cars> searchCars(String make, String model, LocalDate startDate, LocalDate endDate) {
+        List<Cars> availableCars = new ArrayList<>();
+        for (Cars car : cars.values()) {
             if (car.getMake().equalsIgnoreCase(make) && car.getModel().equalsIgnoreCase(model) && car.isAvailable()) {
                 if (isCarAvailable(car, startDate, endDate)) {
                     availableCars.add(car);
@@ -46,7 +46,7 @@ public class CarRentalSystem {
         return availableCars;
     }
 
-    private boolean isCarAvailable(Car car, LocalDate startDate, LocalDate endDate) {
+    private boolean isCarAvailable(Cars car, LocalDate startDate, LocalDate endDate) {
         for (Reservation reservation : reservations.values()) {
             if (reservation.getCar().equals(car)) {
                 if (startDate.isBefore(reservation.getEndDate()) && endDate.isAfter(reservation.getStartDate())) {
@@ -57,7 +57,7 @@ public class CarRentalSystem {
         return true;
     }
 
-    public synchronized Reservation makeReservation(Customer customer, Car car, LocalDate startDate, LocalDate endDate) {
+    public synchronized Reservation makeReservation(Customer customer, Cars car, LocalDate startDate, LocalDate endDate) {
         if (isCarAvailable(car, startDate, endDate)) {
             String reservationId = generateReservationId();
             Reservation reservation = new Reservation(reservationId, customer, car, startDate, endDate);

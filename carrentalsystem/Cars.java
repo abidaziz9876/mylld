@@ -1,4 +1,4 @@
-public class Car {
+public class Cars {
     private final String make;
     private final String model;
     private final int year;
@@ -6,7 +6,7 @@ public class Car {
     private final double rentalPricePerDay;
     private boolean available;
 
-    public Car(String make, String model, int year, String licensePlate, double rentalPricePerDay) {
+    public Cars(String make, String model, int year, String licensePlate, double rentalPricePerDay) {
         this.make = make;
         this.model = model;
         this.year = year;
