@@ -1,5 +1,5 @@
 
-import loggingframework.LogMessage;
+
 
 public class ConsoleAppender implements LogAppender {
     @Override

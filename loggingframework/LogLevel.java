@@ -1,4 +1,4 @@
-package loggingframework;
+
 
 public enum LogLevel {
     DEBUG(1),

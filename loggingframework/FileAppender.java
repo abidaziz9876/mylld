@@ -1,6 +1,6 @@
 
 
-import loggingframework.LogMessage;
+
 
 import java.io.FileWriter;
 import java.io.IOException;

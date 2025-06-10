@@ -1,7 +1,6 @@
 
 import java.util.List;
 
-import loggingframework.LogMessage;
 
 public class CompositeAppender implements LogAppender {
     private List<LogAppender> appenders;

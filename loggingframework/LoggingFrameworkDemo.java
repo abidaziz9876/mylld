@@ -1,4 +1,4 @@
-package loggingframework;
+
 
 
 public class LoggingFrameworkDemo {
