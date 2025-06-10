@@ -5,6 +5,7 @@ public class ATMMachine {
     private ATMMachineState currentState;
     private Card currentCard;
     private int totalBalance;
+    private TransactionType selectedOperation;
 
     private ATMMachine() {
         currentState = new IdleState(this);
