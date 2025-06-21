@@ -1,109 +1,62 @@
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class VendingMachine {
-    private static VendingMachine instance;
-    Inventory inventory;
-    private final VendingMachineState idleState;
-    private final VendingMachineState readyState;
-    private final VendingMachineState dispenseState;
-    private final VendingMachineState returnChangeState;
-    private VendingMachineState currentState;
-    private Product selectedProduct;
-    private double totalPayment;
+    Map<Product,Integer> inventory=new HashMap<>();
+    private static VendingMachine instance=null;
 
-    private VendingMachine() {
-        inventory = new Inventory();
-        idleState = new IdleState(this);
-        readyState = new ReadyState(this);
-        dispenseState = new DispenseState(this);
-        returnChangeState = new ReturnChangeState(this);
-        currentState = idleState;
-        selectedProduct = null;
-        totalPayment = 0.0;
+    VendingMachineState currState;
+    int balance=0;
+    Product selectedProduct;
+    int selectedQuantity=0;
+    private VendingMachine(){
+        currState=new IdleState();
     }
-
-    public static synchronized VendingMachine getInstance() {
-        if (instance == null) {
-            instance = new VendingMachine();
+    public synchronized static VendingMachine getInstance(){
+        if(instance==null){
+            instance=new VendingMachine();
         }
         return instance;
     }
 
-    public Product addProduct(String name, double price, int quantity) {
-        Product product = new Product(name, price);
-        inventory.addProduct(product, quantity);
-        return product;
+    public void updateInventory(Product product, int quantity){
+        inventory.put(product, inventory.get(product) - quantity);
     }
 
-    public void selectProduct(Product product) {
-        currentState.selectProduct(product);
+    public void selectProduct(Product product, int quantity) {
+        if (!inventory.containsKey(product) || inventory.get(product) < quantity) {
+            System.out.println("Product not available in required quantity.");
+            return;
+        }
+        this.selectedProduct = product;
+        this.selectedQuantity = quantity;
+        System.out.println("You selected: " + product + " x " + quantity);
     }
 
-    public void insertCoin(Coin coin) {
-        currentState.insertCoin(coin);
+    
+    public void setState(VendingMachineState state){
+        this.currState=state;
     }
 
-    public void insertNote(Note note) {
-        currentState.insertNote(note);
+    public void addProduct(Product product, int quantity){
+        inventory.put(product, quantity);
     }
 
-    public void dispenseProduct() {
-        currentState.dispenseProduct();
+    
+    public void removeProduct(Product product){
+        inventory.remove(product);
     }
 
-    public void returnChange() {
-        currentState.returnChange();
+    public void insertNote(Note note){
+        balance+=note.getValue();
     }
 
-    void setState(VendingMachineState state) {
-        currentState = state;
+    public int getBalance(){
+        return this.balance;
     }
 
-    Inventory getInventory() {
-        return inventory;
-    }
-
-    VendingMachineState getIdleState() {
-        return idleState;
-    }
-
-    VendingMachineState getReadyState() {
-        return readyState;
-    }
-
-    VendingMachineState getDispenseState() {
-        return dispenseState;
-    }
-
-    VendingMachineState getReturnChangeState() {
-        return returnChangeState;
-    }
-
-    Product getSelectedProduct() {
-        return selectedProduct;
-    }
-
-    void setSelectedProduct(Product product) {
-        selectedProduct = product;
-    }
-
-    void resetSelectedProduct() {
-        selectedProduct = null;
-    }
-
-    double getTotalPayment() {
-        return totalPayment;
-    }
-
-    void addCoin(Coin coin) {
-        totalPayment += coin.getValue();
-    }
-
-    void addNote(Note note) {
-        totalPayment += note.getValue();
-    }
-
-    void resetPayment() {
-        totalPayment = 0.0;
+    public void request(){
+        currState.handleRequest(this);
     }
 }

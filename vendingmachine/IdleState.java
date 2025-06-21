@@ -1,40 +1,12 @@
-
-
-class IdleState implements VendingMachineState {
-    private final VendingMachine vendingMachine;
-
-    public IdleState(VendingMachine vendingMachine) {
-        this.vendingMachine = vendingMachine;
-    }
-
+public class IdleState implements VendingMachineState {
     @Override
-    public void selectProduct(Product product) {
-        if (vendingMachine.getInventory().isAvailable(product)) {
-            System.out.println("Product selected: " + product.getName());
-            vendingMachine.setSelectedProduct(product);
-            vendingMachine.setState(vendingMachine.getReadyState());
-        } else {
-            System.out.println("Product not available: " + product.getName());
+    public void handleRequest(VendingMachine vm) {
+        if (vm.selectedProduct == null) {
+            System.out.println("Please select a product first.");
+            return;
         }
-    }
-
-    @Override
-    public void insertCoin(Coin coin) {
-        System.out.println("Please select a product first.");
-    }
-
-    @Override
-    public void insertNote(Note note) {
-        System.out.println("Please select a product first.");
-    }
-
-    @Override
-    public void dispenseProduct() {
-        System.out.println("Please select a product and make payment.");
-    }
-
-    @Override
-    public void returnChange() {
-        System.out.println("No change to return.");
+        System.out.println("Product selected: " + vm.selectedProduct);
+        System.out.println("Please insert money...");
+        vm.setState(new ReadyState());
     }
 }

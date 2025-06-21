@@ -1,35 +1,30 @@
 public class DispenseState implements VendingMachineState {
-    private final VendingMachine vendingMachine;
-
-    public DispenseState(VendingMachine vendingMachine) {
-        this.vendingMachine = vendingMachine;
-    }
-
     @Override
-    public void selectProduct(Product product) {
-        System.out.println("Product already selected. Please collect the dispensed product.");
-    }
+    public void handleRequest(VendingMachine vm) {
+        Product product = vm.selectedProduct;
+        int quantity = vm.selectedQuantity;
+        int currentQty = vm.inventory.getOrDefault(product, 0);
+        int totalCost = product.getPrice() * quantity;
 
-    @Override
-    public void insertCoin(Coin coin) {
-        System.out.println("Payment already made. Please collect the dispensed product.");
-    }
+        if (currentQty < quantity) {
+            System.out.println("Not enough stock to fulfill request.");
+            vm.setState(new IdleState());
+            return;
+        }
 
-    @Override
-    public void insertNote(Note note) {
-        System.out.println("Payment already made. Please collect the dispensed product.");
-    }
-
-    @Override
-    public void dispenseProduct() {
-        Product product = vendingMachine.getSelectedProduct();
-        vendingMachine.getInventory().updateQuantity(product, vendingMachine.getInventory().getQuantity(product) - 1);
-        System.out.println("Product dispensed: " + product.getName());
-        vendingMachine.setState(vendingMachine.getReturnChangeState()); // Change the state to ReturnChangeState
-    }
-
-    @Override
-    public void returnChange() {
-        System.out.println("Please collect the dispensed product first.");
+        if (vm.balance >= totalCost) {
+            vm.updateInventory(product, quantity);
+            vm.balance -= totalCost;
+            System.out.println("Dispensing: " + product + " x" + quantity);
+            if (vm.balance > 0) {
+                System.out.println("Returning change: " + vm.balance);
+            }
+            vm.balance = 0;
+            vm.selectedProduct = null;
+            vm.selectedQuantity = 0;
+            vm.setState(new IdleState());
+        } else {
+            System.out.println("Insufficient balance.");
+        }
     }
 }
