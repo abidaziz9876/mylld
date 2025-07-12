@@ -17,11 +17,16 @@ public class FixedWindowRateLimiter implements RateLimiter {
     @Override
     public boolean allowRequest(String userId) {
         long currentTime = System.currentTimeMillis();
-        userWindows.putIfAbsent(userId, new Window(0, currentTime));
 
-        synchronized (userWindows.get(userId)) {
-            Window window = userWindows.get(userId);
+        if (!userWindows.containsKey(userId)) {
+            userWindows.put(userId, new Window(0, currentTime));
+        }
+        
+        Window window = userWindows.get(userId);
 
+        //per user window lock, not the whole class or global locking for all users, very effective.
+        
+        synchronized (window) {
             if (currentTime - window.startTime >= windowSizeMillis) {
                 // Reset window
                 window.startTime = currentTime;
