@@ -25,11 +25,11 @@ public class ParkingLotDemo {
         try {
             
             Ticket ticket2 = parkingLot.parkVehicle(truck);
-            System.out.println("Car 2 parked: " + ticket2.getTicketId());
+            System.out.println("Car 2 parked, ticket-" + ticket2.getTicketId());
             parkingTickets.add(ticket2.getTicketId());
 
             Ticket ticket3 = parkingLot.parkVehicle(bike);
-            System.out.println("Bike 1 parked: " + ticket3.getTicketId());
+            System.out.println("Bike 1 parked, ticket-" + ticket3.getTicketId());
             parkingTickets.add(ticket3.getTicketId());
 
             // Try parking another car when spots are full

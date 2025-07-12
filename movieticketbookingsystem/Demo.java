@@ -94,6 +94,13 @@ public class Demo {
 
         ExecutorService executor = Executors.newFixedThreadPool(5); // 5 threads simulating users
         CountDownLatch latch = new CountDownLatch(1); // start all threads at once
+        //This creates a latch that is waiting for a single signal.
+
+        //All 5 worker threads call latch.await() and get blocked.
+
+        //The main thread calls latch.countDown() once, which releases all 5 waiting threads at the same time.
+
+
 
         for (int i = 1; i <= 5; i++) {
             int userId = i;
