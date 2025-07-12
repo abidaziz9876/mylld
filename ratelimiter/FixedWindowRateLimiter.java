@@ -2,6 +2,7 @@ package ratelimiter;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+
 public class FixedWindowRateLimiter implements RateLimiter {
     private final int maxRequests;
     private final long windowSizeMillis;
@@ -18,9 +19,7 @@ public class FixedWindowRateLimiter implements RateLimiter {
     public boolean allowRequest(String userId) {
         long currentTime = System.currentTimeMillis();
 
-        if (!userWindows.containsKey(userId)) {
-            userWindows.put(userId, new Window(0, currentTime));
-        }
+        userWindows.putIfAbsent(userId, new Window(0, currentTime));
         
         Window window = userWindows.get(userId);
 
@@ -54,3 +53,56 @@ public class FixedWindowRateLimiter implements RateLimiter {
     }
 }
 
+/*
+public class FixedWindowRateLimiter implements RateLimiter {
+    private final int maxRequests;
+    private final long windowSizeMillis;
+    private final Map<String, Window> userWindows = new ConcurrentHashMap<>();
+
+    public FixedWindowRateLimiter(int maxRequests, long windowSizeMillis) {
+        this.maxRequests = maxRequests;
+        this.windowSizeMillis = windowSizeMillis;
+    }
+
+    @Override
+    public boolean allowRequest(String userId) {
+        long currentTime = System.currentTimeMillis();
+        userWindows.putIfAbsent(userId, new Window(0, currentTime));
+
+        Window window = userWindows.get(userId);
+
+        if (window.lock.tryLock()) {
+            try {
+                if (currentTime - window.startTime >= windowSizeMillis) {
+                    window.startTime = currentTime;
+                    window.requestCount = 1;
+                    return true;
+                }
+
+                if (window.requestCount < maxRequests) {
+                    window.requestCount++;
+                    return true;
+                }
+
+                return false;
+            } finally {
+                window.lock.unlock();
+            }
+        } else {
+            // Could not acquire lock
+            return false;
+        }
+    }
+
+    private static class Window {
+        int requestCount;
+        long startTime;
+        final ReentrantLock lock = new ReentrantLock();
+
+        Window(int requestCount, long startTime) {
+            this.requestCount = requestCount;
+            this.startTime = startTime;
+        }
+    }
+}
+*/
