@@ -12,8 +12,8 @@ public class Theatre {
         this.location=location;
         this.shows = shows;
     }
-    public void addShow(Show screen) {
-        shows.add(screen);
+    public void addShow(Show show) {
+        shows.add(show);
     }
     // Getters Section Start
     public String getTheatreId() {

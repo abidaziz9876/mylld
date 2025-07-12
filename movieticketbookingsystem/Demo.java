@@ -45,9 +45,13 @@ class Demo{
         Booking booking = bookingSystem.bookTickets(user, show1, selectedSeats,paymentProcessor);
         if (booking != null) {
             System.out.println("Booking successful. Booking ID: " + booking.getId());
+            bookingSystem.confirmBooking(booking.getId());
         } else {
             System.out.println("Booking failed. Seats not available.");
         }
+
+        bookingSystem.cancelBooking(booking.getId());
+        System.out.println("Booking canceled. Booking ID: " + booking.getId());
     }
 
     private static Map<String, Seat> createSeats(int rows, int columns) {
@@ -64,3 +68,76 @@ class Demo{
         return seats;
     }
 }
+
+
+/*
+public class Demo {
+    public static void main(String[] args) throws InterruptedException {
+        MovieTicketBookingSystem bookingSystem = MovieTicketBookingSystem.getInstance();
+
+        // Add movie and theater
+        Movie movie = new Movie("Interstellar", 150, "Sci-fi");
+        Theatre theater = new Theatre("T1", "PVR", "Mumbai", new ArrayList<>());
+        bookingSystem.addMovie(movie);
+        bookingSystem.addTheater(theater);
+
+        // Create show with 10x10 seats
+        Show show = new Show("S1", movie, theater, LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(movie.getMovieDuration()), createSeats(10, 10));
+        bookingSystem.addShow(show);
+
+        // Selected seats to simulate race condition
+        List<Seat> selectedSeats = Arrays.asList(
+                show.getSeats().get("1-1"),
+                show.getSeats().get("1-2")
+        );
+
+        ExecutorService executor = Executors.newFixedThreadPool(5); // 5 threads simulating users
+        CountDownLatch latch = new CountDownLatch(1); // start all threads at once
+
+        for (int i = 1; i <= 5; i++) {
+            int userId = i;
+            executor.submit(() -> {
+                try {
+                    latch.await(); // wait for signal to start
+                    User user = new User(String.valueOf(userId), "user-" + userId);
+
+                    PaymentContext paymentProcessor = new PaymentContext();
+                    paymentProcessor.setPaymentStrategy(new UPIPayment("user" + userId + "@oksbi"));
+
+                    Booking booking = bookingSystem.bookTickets(user, show, selectedSeats, paymentProcessor);
+
+                    if (booking != null) {
+                        System.out.println("✅ Booking success for " + user.getName() + " - Booking ID: " + booking.getId());
+                    } else {
+                        System.out.println("❌ Booking failed for " + user.getName() + " - Seats not available or timeout.");
+                    }
+
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+        }
+
+        Thread.sleep(100); // small pause before releasing latch
+        latch.countDown(); // start all threads at once
+
+        executor.shutdown();
+        executor.awaitTermination(5, TimeUnit.SECONDS);
+    }
+
+    private static Map<String, Seat> createSeats(int rows, int columns) {
+        Map<String, Seat> seats = new HashMap<>();
+        for (int row = 1; row <= rows; row++) {
+            for (int col = 1; col <= columns; col++) {
+                String seatId = row + "-" + col;
+                SeatType seatType = (row <= 2) ? SeatType.PREMIUM : SeatType.NORMAL;
+                double price = (seatType == SeatType.PREMIUM) ? 150.0 : 100.0;
+                seats.put(seatId, new Seat(seatId, row, col, seatType, price, SeatStatus.AVAILABLE));
+            }
+        }
+        return seats;
+    }
+}
+
+*/
