@@ -152,7 +152,7 @@ public class MovieTicketBookingSystem {
         Booking booking = bookings.get(bookingId);
         if (booking != null && booking.getStatus() == BookingStatus.PENDING) {
             booking.setStatus(BookingStatus.CONFIRMED);
-            // Process payment and send confirmation
+            //send confirmation
             // ...
         }
     }
