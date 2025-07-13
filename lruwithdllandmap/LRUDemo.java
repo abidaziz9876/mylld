@@ -1,5 +1,13 @@
 package lruwithdllandmap;
 
+
+/*
+-Do we need the cache to be thread-safe?
+-Should the cache support generic types, or will keys and values always be String, Integer, etc.
+-Do we need to support expiration of entries after a certain time?
+-Do we need a method to manually remove an entry from cache?
+*/
+
 public class LRUDemo {
     public static void main(String[] args) {
         LRUCache<String, Integer> cache = new LRUCache<>(3);
@@ -13,6 +21,16 @@ public class LRUDemo {
         cache.put("d", 4);
         
         System.out.println(cache.get("b")); // null
+
+
+        // LRUCache<String, String> cache = new LRUCache<>(3, 3000); // 3 entries, TTL = 3 sec
+
+        // cache.put("A", "Alpha");
+        // Thread.sleep(1000);
+        // cache.put("B", "Beta");
+        // Thread.sleep(1000);
+        // cache.put("C", "Gamma");
+
     }
 }
 
