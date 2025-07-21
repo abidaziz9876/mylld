@@ -1,11 +1,12 @@
 package lld_problems.atmmachine;
+import java.time.YearMonth;
 
 public class Card {
     private  int PIN;
     private int cardNumber;
-    private int expiry;
+    private YearMonth expiry;
     private Account linkedAccount;
-    public Card(int cardNumber, int expiry, int PIN, Account account) {
+    public Card(int cardNumber, YearMonth expiry, int PIN, Account account) {
         this.PIN = PIN;
         this.cardNumber = cardNumber;
         this.expiry = expiry;
@@ -15,7 +16,7 @@ public class Card {
         return this.PIN;
     }
 
-    public int getExpiry(){
+    public YearMonth getExpiry(){
         return this.expiry;
 
     }
@@ -23,7 +24,7 @@ public class Card {
     public int getCardNumber(){
         return this.cardNumber;
     }
-    public Account getLinkedAccount() { // <-- Getter to access account
+    public Account getLinkedAccount() {
         return this.linkedAccount;
     }
 }

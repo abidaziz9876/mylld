@@ -2,10 +2,10 @@ package lld_problems.atmmachine;
 
 import java.util.Map;
 
-public class AmountEntryState implements ATMMachineState {
+public class DepositWithdrawState implements ATMMachineState {
     private ATMMachine atm;
 
-    public AmountEntryState(ATMMachine atm) {
+    public DepositWithdrawState(ATMMachine atm) {
         this.atm = atm;
     }
 
@@ -28,7 +28,7 @@ public class AmountEntryState implements ATMMachineState {
             // Update ATM's internal balance
             atm.addBalance(depositedNotes);
         
-            System.out.println("₹" + depositAmount + " deposited successfully.");
+            System.out.println(depositAmount + " deposited successfully.");
             atm.setState(new IdleState(atm));
             return;
         }

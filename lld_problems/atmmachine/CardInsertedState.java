@@ -14,7 +14,7 @@ public class CardInsertedState implements ATMMachineState {
 
         if (enteredPIN == atm.getCard().getPIN()) {
             System.out.println("PIN is correct.");
-            atm.setState(new SelectTransactionType(atm));
+            atm.setState(new SelectTransactionTypeState(atm));
             atm.process(card);
         } else {
             System.out.println("Incorrect PIN. Ejecting card.");
