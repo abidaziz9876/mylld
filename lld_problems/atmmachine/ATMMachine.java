@@ -7,24 +7,35 @@ public class ATMMachine {
     private ATMMachineState currentState;
     private Card currentCard;
     private int totalBalance;
-    private TransactionType selectedOperation;
+    private TransactionType transactionType;
 
     private ATMMachine() {
         currentState = new IdleState(this);
         totalBalance = 0;
     }
 
-    public static ATMMachine getInstance() {
+    public synchronized static ATMMachine getInstance() {
         if (instance == null) instance = new ATMMachine();
         return instance;
     }
 
+    public void setTransactionType(TransactionType type){
+        this.transactionType=type;
+    }
+
+    public TransactionType getTransactionType(){
+        return transactionType;
+    }
     public void setState(ATMMachineState state) {
         this.currentState = state;
     }
 
-    public void process() {
-        currentState.handle();
+    public ATMMachineState getCurrentState(){
+        return currentState;
+    }
+
+    public void process(Card card) {
+        currentState.handle(card);
     }
 
     public void setCard(Card card) {
@@ -39,10 +50,16 @@ public class ATMMachine {
         return totalBalance;
     }
 
-    public void addBalance(Map<Note, Integer> notes) {
+    public int calculateTotalAmount(Map<Note, Integer> notes) {
+        int total = 0;
         for (Map.Entry<Note, Integer> entry : notes.entrySet()) {
-            totalBalance += entry.getKey().getValue() * entry.getValue();
+            total += entry.getKey().getValue() * entry.getValue();
         }
+        return total;
+    }
+    public void addBalance(Map<Note, Integer> notes) {
+        int amount=calculateTotalAmount(notes);
+        totalBalance += amount;
     }
 
     public void deductBalance(int amount) {

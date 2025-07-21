@@ -2,5 +2,6 @@ package lld_problems.atmmachine;
 
 public enum TransactionType {
     WITHDRAW_CASH,
-    CHECK_BALANCE
+    CHECK_BALANCE,
+    DEPOSIT_CASH
 }

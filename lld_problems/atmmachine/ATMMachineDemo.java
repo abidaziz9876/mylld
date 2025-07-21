@@ -14,7 +14,9 @@ import java.util.Map;
 public class ATMMachineDemo {
     public static void main(String[] args) {
         ATMMachine atm = ATMMachine.getInstance();
-        atm.addBalance(Map.of(Note.ONE_HUNDRED, 10)); // ₹5000
-        atm.process();
+        atm.addBalance(Map.of(Note.ONE_HUNDRED, 1000)); // ₹5000
+        Account userAccount = new Account("AC001", 5000);
+        Card card = new Card(123456, 1234, 1234,userAccount); // Simulated
+        atm.process(card);
     }
 }

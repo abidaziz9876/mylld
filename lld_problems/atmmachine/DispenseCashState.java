@@ -10,11 +10,12 @@ public class DispenseCashState implements ATMMachineState {
     }
 
     @Override
-    public void handle() {
-        System.out.println("Dispensing ₹" + amount);
+    public void handle(Card card) {
+        System.out.println("Dispensing " + amount+" rupees");
         atm.deductBalance(amount);
+        atm.getCard().getLinkedAccount().withdraw(amount);
         System.out.println("Transaction complete. Returning to idle.");
         atm.setState(new IdleState(atm));
-        atm.process();
+        // atm.process();
     }
 }

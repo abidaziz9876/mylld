@@ -8,17 +8,18 @@ public class CardInsertedState implements ATMMachineState {
     }
 
     @Override
-    public void handle() {
+    public void handle(Card card) {
         System.out.println("Card inserted. Please enter your PIN.");
         int enteredPIN = 1234; // Simulated
 
         if (enteredPIN == atm.getCard().getPIN()) {
             System.out.println("PIN is correct.");
-            atm.setState(new AmountEntryState(atm));
+            atm.setState(new SelectTransactionType(atm));
+            atm.process(card);
         } else {
             System.out.println("Incorrect PIN. Ejecting card.");
+            System.out.println("returning to Idle State");
             atm.setState(new IdleState(atm));
         }
-        atm.process(); // Move to next step
     }
 }

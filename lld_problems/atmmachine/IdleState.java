@@ -8,11 +8,15 @@ public class IdleState implements ATMMachineState {
     }
 
     @Override
-    public void handle() {
-        System.out.println("ATM is idle. Please insert your card.");
-        Card card = new Card(123456, 1234, 1001); // Simulated
-        atm.setCard(card);
-        atm.setState(new CardInsertedState(atm));
-        atm.process(); // Trigger next state
+    public void handle(Card card) {
+        System.out.println("Welcome to XYZ ATM, please insert your card");
+        if(card==null){
+            System.out.println("please insert your card");
+        }
+        else{
+            atm.setCard(card);
+            atm.setState(new CardInsertedState(atm));
+            atm.process(card);
+        }
     }
 }

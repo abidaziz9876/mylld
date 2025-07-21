@@ -9,7 +9,7 @@ public class Account {
         this.balance = initialBalance;
     }
     
-    public boolean withdraw(double amount) {
+    public synchronized boolean withdraw(double amount) {
         if (balance >= amount) {
             balance -= amount;
             return true;
@@ -17,7 +17,7 @@ public class Account {
         return false;
     }
     
-    public void deposit(double amount) {
+    public synchronized void deposit(double amount) {
         balance += amount;
     }
     
