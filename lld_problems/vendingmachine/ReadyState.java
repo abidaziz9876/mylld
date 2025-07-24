@@ -3,7 +3,8 @@ package lld_problems.vendingmachine;
 public class ReadyState implements VendingMachineState {
     @Override
     public void handleRequest(VendingMachine vm) {
-        if (vm.getBalance() >= vm.selectedProduct.getPrice()) {
+        
+        if (vm.getBalance() >= vm.totalAmount) {
             System.out.println("Sufficient balance received: " + vm.getBalance());
             vm.setState(new DispenseState());
         } else {

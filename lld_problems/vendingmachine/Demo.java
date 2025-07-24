@@ -1,14 +1,27 @@
 package lld_problems.vendingmachine;
 
-public class Demo {    
+import java.util.Map;
+import java.util.Vector;
+
+public class Demo {
     public static void main(String[] args) {
-        VendingMachine vm=VendingMachine.getInstance();
-        Product chips=new Product("Chips", 100);
-        vm.addProduct(chips, 10);
-        vm.selectProduct(chips, 2);
-        vm.request();                         // select → ready
-        vm.insertNote(Note.FIVEHUNDRED);      // insert ₹500
-        vm.request();                         // pay → dispense (₹200 used, ₹300 returned)
-        vm.request();                         // goes back to idle
+        VendingMachine vm = new VendingMachine();
+
+        Product chips = new Product("Chips", 20);
+        Product kurkure = new Product("kurkure", 10);
+
+        vm.addProduct(chips, 5);
+        vm.addProduct(kurkure, 5);
+
+        // ❌ Invalid selection
+        vm.selectedProduct(Map.of(chips, 10, kurkure, 5));
+        vm.request();   // Will print unavailable and allow reselection
+
+        // ✅ User adjusts selection
+        vm.selectedProduct(Map.of(chips, 3, kurkure, 5)); // Now valid
+        vm.request();  // Transitions to ReadyState
+        vm.insertNote(Note.FIVEHUNDRED);
+        vm.request();  // Dispenses
     }
 }
+

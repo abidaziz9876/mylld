@@ -3,31 +3,22 @@ package lld_problems.vendingmachine;
 public class DispenseState implements VendingMachineState {
     @Override
     public void handleRequest(VendingMachine vm) {
-        Product product = vm.selectedProduct;
-        int quantity = vm.selectedQuantity;
-        int currentQty = vm.inventory.getOrDefault(product, 0);
-        int totalCost = product.getPrice() * quantity;
+        
+        System.out.println("Collect your products and change if any");
 
-        if (currentQty < quantity) {
-            System.out.println("Not enough stock to fulfill request.");
-            vm.setState(new IdleState());
+        if(vm.balance >= vm.totalAmount){
+            int change = vm.balance - vm.totalAmount;
+            if (change > 0) {
+                System.out.println("Returning change: " + change);
+            }
+            vm.balance = 0;
+        } else {
+            System.out.println("Insufficient balance.");
             return;
         }
 
-        if (vm.balance >= totalCost) {
-            vm.updateInventory(product, quantity);
-            vm.balance -= totalCost;
-            System.out.println("Dispensing: " + product + " x" + quantity);
-            if (vm.balance > 0) {
-                System.out.println("Returning change: " + vm.balance);
-            }
-            vm.balance = 0;
-            vm.selectedProduct = null;
-            vm.selectedQuantity = 0;
-            vm.setState(new IdleState());
-        } else {
-            System.out.println("Insufficient balance.");
-        }
+        vm.updateInventory(vm.selectedProducts);
+        System.out.println();
+        vm.setState(new IdleState());
     }
 }
-
