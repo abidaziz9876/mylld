@@ -10,28 +10,33 @@ package lld_problems.loggingframework;
 */
 
 public class LoggingFrameworkDemo {
-    public static void run() {
-        Logger logger = Logger.getInstance();
+    private static LogHandler getChainOfLoggers(LogAppender appender) {
+        LogHandler errorLogger = new ErrorLogger(LogHandler.ERROR, appender);
+        LogHandler debugLogger = new DebugLogger(LogHandler.DEBUG, appender);
+        LogHandler infoLogger = new InfoLogger(LogHandler.INFO, appender);
+        infoLogger.setNextLogger(debugLogger);
+        debugLogger.setNextLogger(errorLogger);
+        return infoLogger;
+    }
+    public static void main() {
+        
 
         // Logging with default configuration
-        logger.info("This is an information message");
-        logger.warning("This is a warning message");
-        logger.error("This is an error message");
+        LogAppender consoleAppender = new ConsoleAppender();
+        LogAppender fileAppender = new FileAppender("logs.txt");
+        // Create the chain of loggers with the console appender
+        LogHandler loggerChain = getChainOfLoggers(consoleAppender);
+        System.out.println("Logging INFO level message:");
+        loggerChain.logMessage(LogHandler.INFO, "This is an information.");
+        System.out.println("nLogging DEBUG level message:");
+        loggerChain.logMessage(LogHandler.DEBUG, "This is a debug level information.");
+        System.out.println("nLogging ERROR level message:");
+        loggerChain.logMessage(LogHandler.ERROR, "This is an error information.");
 
-        // Changing log level and appender
-        LoggerConfig config = new LoggerConfig(LogLevel.DEBUG, new FileAppender("app.log"));
-        logger.setConfig(config);
-
-        // List<LogAppender> appenders = new ArrayList<>();
-        // appenders.add(new ConsoleAppender());
-        // appenders.add(new FileAppender("logs.txt"));
-        // appenders.add(new DatabaseAppender(...));
-
-        // If you want to change the minimum loglevel then you can just do from below
-        // LoggerConfig config = new LoggerConfig(LogLevel.INFO, new CompositeAppender(appenders));
-        // Logger.getInstance().setConfig(config);
-
-        logger.debug("This is a debug message");
-        logger.info("This is an information message");
+        // Demonstrate the singleton Logger usage as an alternative
+        System.out.println("nUsing Singleton Logger:");
+        Logger logger = Logger.getInstance(LogLevel.INFO, consoleAppender);
+        logger.setConfig(new LoggerConfig(LogLevel.INFO, fileAppender));
+        logger.error("Using singleton Logger - Error message");
     }
 }

@@ -5,7 +5,6 @@ package lld_problems.loggingframework;
 public class LoggerConfig {
     private LogLevel logLevel;
     private LogAppender logAppender;
-
     public LoggerConfig(LogLevel logLevel, LogAppender logAppender) {
         this.logLevel = logLevel;
         this.logAppender = logAppender;

@@ -16,5 +16,8 @@ public enum LogLevel {
     public int getSeverity() {
         return severity;
     }
+    public boolean isGreaterOrEqual(LogLevel other) {
+        return this.severity >= other.severity;
+    }
 }
 
