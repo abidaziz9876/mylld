@@ -1,23 +1,16 @@
 package lld_problems.loggingframework;
 
 public enum LogLevel {
-    DEBUG(1),
-    INFO(2),
-    WARNING(3),
-    ERROR(4),
-    FATAL(5);
+    DEBUG(1), INFO(2), ERROR(3);
 
-    private int severity;
+    private int level;
 
-    LogLevel(int severity) {
-        this.severity = severity;
+    LogLevel(int level) {
+        this.level = level;
     }
 
-    public int getSeverity() {
-        return severity;
-    }
-    public boolean isGreaterOrEqual(LogLevel other) {
-        return this.severity >= other.severity;
+    public int getLevel() {
+        return level;
     }
 }
 

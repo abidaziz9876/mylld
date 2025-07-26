@@ -10,33 +10,18 @@ package lld_problems.loggingframework;
 */
 
 public class LoggingFrameworkDemo {
-    private static LogHandler getChainOfLoggers(LogAppender appender) {
-        LogHandler errorLogger = new ErrorLogger(LogHandler.ERROR, appender);
-        LogHandler debugLogger = new DebugLogger(LogHandler.DEBUG, appender);
-        LogHandler infoLogger = new InfoLogger(LogHandler.INFO, appender);
-        infoLogger.setNextLogger(debugLogger);
-        debugLogger.setNextLogger(errorLogger);
-        return infoLogger;
-    }
-    public static void main() {
-        
+    
+    public static void main(String[] args) {
+        Logger logger = Logger.getInstance();
 
-        // Logging with default configuration
-        LogAppender consoleAppender = new ConsoleAppender();
-        LogAppender fileAppender = new FileAppender("logs.txt");
-        // Create the chain of loggers with the console appender
-        LogHandler loggerChain = getChainOfLoggers(consoleAppender);
-        System.out.println("Logging INFO level message:");
-        loggerChain.logMessage(LogHandler.INFO, "This is an information.");
-        System.out.println("nLogging DEBUG level message:");
-        loggerChain.logMessage(LogHandler.DEBUG, "This is a debug level information.");
-        System.out.println("nLogging ERROR level message:");
-        loggerChain.logMessage(LogHandler.ERROR, "This is an error information.");
+        logger.log(LogLevel.DEBUG, "Debug log - console");
+        logger.log(LogLevel.ERROR, "Error log - console");
 
-        // Demonstrate the singleton Logger usage as an alternative
-        System.out.println("nUsing Singleton Logger:");
-        Logger logger = Logger.getInstance(LogLevel.INFO, consoleAppender);
-        logger.setConfig(new LoggerConfig(LogLevel.INFO, fileAppender));
-        logger.error("Using singleton Logger - Error message");
+        logger.setMinLogLevel(LogLevel.INFO);
+        logger.setLogAppender(new FileAppender("logs.txt"));
+
+        logger.log(LogLevel.DEBUG, "This will be ignored");
+        logger.log(LogLevel.INFO, "This will go to file");
+        logger.log(LogLevel.ERROR, "This too will go to file");
     }
 }

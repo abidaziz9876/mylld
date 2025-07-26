@@ -3,44 +3,48 @@ package lld_problems.loggingframework;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Logger {
-    private static final ConcurrentHashMap<String, Logger> instances = new ConcurrentHashMap<>();
-    private LoggerConfig config;
-    // Private constructor to enforce singleton pattern
-    private Logger(LogLevel logLevel, LogAppender logAppender) {
-        config = new LoggerConfig(logLevel, logAppender);
+    private static Logger instance;
+
+    private LogLevel minLogLevel;
+    private LogAppender appender;
+    private LogHandler chain;
+
+    private Logger() {
+        this.minLogLevel = LogLevel.DEBUG;
+        this.appender = new ConsoleAppender();
+        setupChain();
     }
 
-    // Get instance based on LogLevel and LogAppender
-    public static Logger getInstance(LogLevel logLevel, LogAppender logAppender) {
-        String key = logLevel.name() + "_" + logAppender.getClass().getName();
-        // Compute instance if absent (thread-safe lazy initialization)
-        return instances.computeIfAbsent(key, k -> new Logger(logLevel, logAppender));
+    private void setupChain() {
+        LogHandler debugHandler = new DebugLogHandler(appender);
+        LogHandler infoHandler = new InfoLogHandler(appender);
+        LogHandler errorHandler = new ErrorLogHandler(appender);
+
+        debugHandler.setNext(infoHandler);
+        infoHandler.setNext(errorHandler);
+
+        this.chain = debugHandler;
     }
 
-    // Updates the logger configuration
-    public void setConfig(LoggerConfig config) {
-        synchronized (Logger.class) { // Ensure thread safety while updating config
-            this.config = config;
+    public static synchronized Logger getInstance() {
+        if (instance == null) {
+            instance = new Logger();
         }
+        return instance;
     }
 
-    // Logs a message if the level meets the configured threshold
+    public void setMinLogLevel(LogLevel level) {
+        this.minLogLevel = level;
+    }
+
+    public void setLogAppender(LogAppender newAppender) {
+        this.appender = newAppender;
+        setupChain();
+    }
+
     public void log(LogLevel level, String message) {
-        if (level.getSeverity() >= config.getLogLevel().getSeverity()) {
-            LogMessage logMessage = new LogMessage(level, message);
-            config.getLogAppender().append(logMessage);
+        if (level.getLevel() >= minLogLevel.getLevel()) {
+            chain.handle(new LogMessage(level, message));
         }
-    }
-
-    public void debug(String message) {
-        log(LogLevel.DEBUG, message);
-    }
-
-    public void info(String message) {
-        log(LogLevel.INFO, message);
-    }
-
-    public void error(String message) {
-        log(LogLevel.ERROR, message);
     }
 }
