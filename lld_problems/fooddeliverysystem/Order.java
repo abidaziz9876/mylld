@@ -11,7 +11,7 @@ public class Order {
     private final List<MenuItem> orderItems;
     private OrderStatus status;
     private DeliveryAgent deliveryAgent;
-
+    private final List<OrderObserver> observers = new ArrayList<>();
     public Order(String id, Customer customer, Restaurant restaurant) {
         this.id = id;
         this.customer = customer;
@@ -54,5 +54,23 @@ public class Order {
 
     public DeliveryAgent getDeliveryAgent() {
         return deliveryAgent;
+    }
+
+    public void addObserver(OrderObserver observer) {
+        observers.add(observer);
+    }
+    
+    public void notifyObservers() {
+        for (OrderObserver observer : observers) {
+            observer.update(this);
+        }
+    }
+
+    public Customer getCustomer(){
+        return customer;
+    }
+
+    public Restaurant getRestaurant(){
+        return restaurant;
     }
 }

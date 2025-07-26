@@ -44,7 +44,7 @@ public class FoodDeliveryDemo {
         for (String restaurantMenu: foodDeliveryService.getRestaurantMenu(restaurant2.getId())) {
             System.out.println(restaurantMenu);
         }
-
+        
         // Place an order
         Order order = foodDeliveryService.placeOrder(customer1.getId(), restaurant1.getId(), List.of("Burger", "Sushi"));
 

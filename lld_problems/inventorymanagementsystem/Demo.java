@@ -11,10 +11,10 @@ class Demo{
         inventoryManager.addWarehouse(warehouse2);
     
         // Create products using ProductFactory
-        ProductFactory productFactory = new ProductFactory();
-        Product laptop = productFactory.createProduct(
+        
+        Product laptop = ProductFactory.createProduct(
             ProductCategory.ELECTRONICS, "SKU123", "Laptop", 1000.0, 50, 25);
-        Product tShirt = productFactory.createProduct(
+        Product tShirt = ProductFactory.createProduct(
             ProductCategory.CLOTHING, "SKU456", "T-Shirt", 20.0, 200, 100);
        
     

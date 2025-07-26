@@ -78,10 +78,15 @@ public class FoodDeliveryService {
                     .filter(m -> itemNames.contains(m.getName()))
                     .toList();
 
+            
             Order order = new Order(customer, restaurant, items);
 
+            order.addObserver(new CustomerObserver(customer));
+            order.addObserver(new RestaurantObserver(restaurant));
+            order.notifyObservers();
+
             orders.put(order.getId(), order);
-            notifyRestaurant(order);
+            // notifyRestaurant(order);
             System.out.println("Order placed: " + order.getId());
 
             return order;
@@ -97,8 +102,8 @@ public class FoodDeliveryService {
             order.updateStatus(status);
 
             System.out.println("Order " + orderId + " updated to " + status);
-
-            notifyCustomer(order);
+            order.notifyObservers();
+            // notifyCustomer(order);
 
             if (status == OrderStatus.DELIVERED && order.getDeliveryAgent() != null) {
                 order.getDeliveryAgent().release();
@@ -110,8 +115,12 @@ public class FoodDeliveryService {
         Order order = orders.get(orderId);
         if (order != null && order.getStatus() == OrderStatus.PENDING) {
             order.updateStatus(OrderStatus.CANCELLED);
-            notifyCustomer(order);
-            notifyRestaurant(order);
+            
+            order.addObserver(new CustomerObserver(order.getCustomer()));
+            order.addObserver(new RestaurantObserver(order.getRestaurant()));
+            order.notifyObservers();
+            // notifyCustomer(order);
+            // notifyRestaurant(order);
             System.out.println("Order cancelled: " + order.getId());
         }
     }
@@ -122,12 +131,14 @@ public class FoodDeliveryService {
         if(order == null) {
             throw new IllegalArgumentException("Order not found");
         }
-
+        
         for (DeliveryAgent agent : deliveryAgents.values()) {
             if (agent.isAvailable()) {
                 agent.assign();
                 order.assignDeliveryAgent(agent);
-                notifyDeliveryAgent(order);
+                order.addObserver(new DeliveryAgentObserver(agent));
+                order.notifyObservers();
+                // notifyDeliveryAgent(order);
                 System.out.println("Agent " + agent.getName() + " assigned to order " + orderId);
                 return;
             }

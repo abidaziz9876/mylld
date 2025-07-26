@@ -1,7 +1,7 @@
 package lld_problems.inventorymanagementsystem;
 
 public class ProductFactory {
-    public Product createProduct(ProductCategory category, String sku, String name, double price, int quantity, int threshold) {
+    public static Product createProduct(ProductCategory category, String sku, String name, double price, int quantity, int threshold) {
         switch (category) {
             case ELECTRONICS:
                 return new ElectronicsProduct(sku, name, price, quantity,threshold);
