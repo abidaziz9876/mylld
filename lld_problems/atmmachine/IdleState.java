@@ -17,18 +17,13 @@ public class IdleState implements ATMMachineState {
             System.out.println("No card detected. Please insert a valid card.");
             return;
         }
-
-        YearMonth now = YearMonth.now();
-        if (card.getExpiry().isBefore(now)) {
-            System.out.println("Card is expired (Expiry: " + card.getExpiry() + "). Please collect your card.");
-            atm.setState(new IdleState(atm)); // remain in Idle
-            return;
+        else{
+            System.out.println("Card inserted.");
+            atm.setCard(card);
+            atm.setState(new AuthState(atm));
+            atm.process(card);
         }
-
-        System.out.println("Card accepted.");
-        atm.setCard(card);
-        atm.setState(new CardInsertedState(atm));
-        atm.process(card);
+        
     }
 }
 
